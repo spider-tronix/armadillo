@@ -13,6 +13,10 @@ The design methodology is explained with much detail in "design.pdf".
     
   • Senthur Raj [https://github.com/imsenthur]
   
-  • Veejay Karthik [https://github.com/vjkarthik97]  
+  • Veejay Karthik [https://github.com/vjkarthik97]
+  
+  • Soma Karthik [https://github.com/karthiks1701]
+  
+  
   
 
