@@ -3,10 +3,11 @@
 ![alt text](https://github.com/spider-tronix/armadillo/blob/master/Oscillatory%20Mechanism/Oscillatory%20mechanisms.PNG)
 
 The angle of oscillation wrt to inner gear and outer gear is same.
+
 phi*(2d/D-d)=(pi-phi)*(2D/D-d)
 phi=pi/(1+(D/d))
 
-![alt text](https://github.com/spider-tronix/armadillo/blob/master/Oscillatory%20Mechanism/Oscillatory%20mechanisms.PNG)     ![alt text](https://github.com/spider-tronix/armadillo/blob/master/Oscillatory%20Mechanism/clearance.PNG)
+![alt text](https://github.com/spider-tronix/armadillo/blob/master/Oscillatory%20Mechanism/Oscillatory%20mechanisms.PNG)    
 
 Ideal Angle of Oscillation
  
