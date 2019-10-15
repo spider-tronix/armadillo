@@ -1,0 +1,27 @@
+ARMADILLO PATENT PLAN
+----------------------------------------------------------------------------------------------------------------------------------
+1)Components list(16th October)
+	a)Design Validation
+	b)Cam-Locus plot and Validation
+	c)Current Sensor/Torque feedback
+	d)3-D printing 
+
+2)Placing Order(16th October)
+
+3)Motor Interfacing
+	a)Relative angular velocity control for 2 motors(also try position control)
+		* PID control
+		* Sliding mode control  
+
+4)Patent Documentation
+	* Patent Filing(10th November)
+----------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------
+CONFERENCE
+5)Torque measurement 
+	a)Current sensor interfacing
+	b)Position control using torque.
+	c)Validating Current tapping circuit. 
+
+6)Mechanical Impedance 
+----------------------------------------------------------------------------------------------------------------------------------
