@@ -9,7 +9,8 @@ ARMADILLO PATENT PLAN
 2)Placing Order(16th October)
 
 3)Motor Interfacing
-	a)Relative angular velocity control for 2 motors(also try position control)
+	*Position and Speed Control 
+	*Relative angular velocity control for 2 motors(also try position control)
 		* PID control
 		* Sliding mode control  
 
