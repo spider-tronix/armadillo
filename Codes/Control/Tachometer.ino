@@ -9,9 +9,10 @@ int spee=255;
 float rpm=0;                                              
 void timer_init()
 {   
-    TCCR0A |= (1<<WGM00)|(1<<COM0A1)|(1<<WGM01)|(1<<CS00);
-    // make sure to make OC0 pin (pin PB3 for atmega32) as output pin
-    DDRB |= (1<<PB3);
+    TCCR0A |= (1 << WGM00)|(1 << COM0A1)|(1 << COM0B1);                                   
+    TCCR0B |= (1 << CS02)|(1 << CS00);                                                    
+    TIMSK0 |= (1 << OCIE0A)|(1 << OCIE0B);
+    DDRD |=(1<<5)|(1<<6);
     OCR0A = spee;
     TCCR1B |= (1 << WGM12)|(1 << CS12);  // TIMER1 256 scale and CTC mode          
     count= (dt * 1000)/16;
