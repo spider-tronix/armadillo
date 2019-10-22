@@ -1,24 +1,24 @@
-int enca=0,encb=0;
-float dt= 100; //sampling time 
+volatile long enca=0,encb=0;
+float dt= 1000.0; //sampling time 
 int speed=125;
-float rpm=0,rpm1=0;
-unsigned long time1=0;
+int rpm=0,rpm1=0;
+float time1=0,timeprev=0;;
 void setup()
 {
     pinMode(6,OUTPUT); //PWM pin2
     pinMode(5,OUTPUT); //PWM pin1
     Serial.begin(9600);
     analogWrite(6,speed);
-    analogWrite(5, 0);
-
+    analogWrite(5, 0);  
+    pinMode(2, INPUT_PULLUP);  // Using internal pullup
+    pinMode(3, INPUT_PULLUP);  // using internal pullup
     attachInterrupt(digitalPinToInterrupt(2), encodera, RISING);
     attachInterrupt(digitalPinToInterrupt(3), encoderb, RISING);
-
-
+    timeprev=millis();
 }
 float calcspeed()
 {
-    rpm=(enca*60)/(5*dt);
+    rpm=(enca*60/203);
     enca=0;
     return rpm;
 }
@@ -36,10 +36,12 @@ void encoderb()
 void loop()
 {
     time1=millis();
-    if(millis()-time1>=dt)
-    {
+    if(time1-timeprev>=dt)
+    {   
+        timeprev=time1;
         rpm=calcspeed();
         Serial.print("RPM : ");
         Serial.println(rpm);
     }
+    
 }
