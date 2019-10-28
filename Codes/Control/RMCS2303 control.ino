@@ -17,7 +17,7 @@ byte slave_id1=6;                // Should be changed when 2 drivers are used fo
 int PP_gain1=32;
 int PI_gain1=16;
 int VF_gain1=32;
-int LPR=334;
+int LPR=810/4;
 int acceleration=5000;
 int speed=100;
 
