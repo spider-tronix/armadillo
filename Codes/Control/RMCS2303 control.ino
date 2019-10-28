@@ -13,7 +13,7 @@ int PP_gain=32;
 int PI_gain=16;
 int VF_gain=32;
 //MOTOR 2 PARAMETERS
-byte slave_id1=8                 // Should be changed when 2 drivers are used for MODBUS protocol
+byte slave_id1=6;                // Should be changed when 2 drivers are used for MODBUS protocol
 int PP_gain1=32;
 int PI_gain1=16;
 int VF_gain1=32;
