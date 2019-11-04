@@ -21,17 +21,17 @@ SoftwareSerial myserial(2,3);     //Software Serial port For Arduino Uno. Commen
 //Parameter Settings "Refer datasheet for details" - 
 byte slave_id=7;                    //Choose the slave id of connected drive.
 int INP_CONTROL_MODE=513;           //IMPORTANT: refer datasheet and set value(integer) according to application 
-int PP_gain=32;
-int PI_gain=16;
+int PP_gain=35;
+int PI_gain=10;
 int VF_gain=32;
-int LPR=810/4;
+int LPR=203;
 int acceleration=5000;
 int speed=8000;
-float radius,a= b= ;
+float radius,a=20,b=10;
 double current_theta=0;
 const double PI =3.141592653589793238463;
 long int Current_position;
-float theta,r;
+float theta,r=25;
 
 void setup()
 {
@@ -44,7 +44,7 @@ void setup()
 
 void loop()
 {
-   theta=acos((a^2+(2*a*b)-(r^2))/(2*r*b));               //Multiply by Gear Ratio to obtain the exact angle rotated by shafts
+   theta=acos(((a*a)+(2*a*b)-(r*r))/(2*r*b));               //Multiply by Gear Ratio to obtain the exact angle rotated by shafts
    rmcs.Absolute_position(slave_id,(theta*LPR)/(2*PI));   //enter position count with direction (CW:+ve,CCW:-ve) 
    
    while(1)                                   //Keep reading positions. Exit when reached.
@@ -54,7 +54,7 @@ void loop()
       Serial.print("Position Feedback :\t");
       Serial.print(Current_position);
       radius=sqrt((a+b)^2-(b*sin(current_theta))^2)-(b*cos(current_theta));
-      //Serial.println(radius);  Use it for plotting radius   
+      Serial.println(radius-r);  Use it for plotting radius   
       delay(100);
       if(radius==r)
       {
