@@ -20,12 +20,19 @@ int VF_gain1=32;
 int LPR=2460;
 int acceleration=100;
 int speed0=10;
-int speedmax=30;
+int speedmax=30,stepsize=5;
 char c;
 
 long int Current_position,Current_position1;
 long int Current_Speed,Current_Speed1;
 unsigned long time;
+void serialEvent() 
+{
+     while (Serial.available()) 
+   {
+     c = Serial.read();
+   }
+}
 
 void setup()
 {
@@ -42,21 +49,17 @@ void setup()
 
 void loop()
 {
-   while (Serial.available()) 
-   {
-     c = Serial.read();
-   }
    if(c=='w')
    {
    rmcs.Enable_Digital_Mode(slave_id,0);       //To enable motor in digital speed control mode. 0-fwd,1-reverse direction.
    rmcs.Speed(slave_id,speed0);                   //Set speed within range of 0-65535 or 0-(maximum speed of base motor)
    //rmcs.Speed(slave_id1,speed1); 
    //rmcs.Enable_Digital_Mode(slave_id1,0);       //To enable motor in digital speed control mode. 0-fwd,1-reverse direction.
-    delay(100);
-    Current_Speed=rmcs.Speed_Feedback(slave_id);
-    Serial.print("Current Speed feedback : ");
-    Serial.println(Current_Speed);
-    delay(10);
+   //delay(100);
+   //Current_Speed=rmcs.Speed_Feedback(slave_id);
+   //Serial.print("Current Speed feedback : ");
+   //Serial.println(Current_Speed);
+   //delay(10);
    }
    else if(c=='s')
    {
@@ -64,10 +67,10 @@ void loop()
    rmcs.Speed(slave_id,speed0);                   //Set speed within range of 0-65535 or 0-(maximum speed of base motor)
    //rmcs.Speed(slave_id1,speed1); 
    //rmcs.Enable_Digital_Mode(slave_id1,0);       //To enable motor in digital speed control mode. 0-fwd,1-reverse direction.
-   Current_Speed=rmcs.Speed_Feedback(slave_id);
-    Serial.print("Current Speed feedback : ");
-    Serial.println(Current_Speed);
-    delay(10);
+   //Current_Speed=rmcs.Speed_Feedback(slave_id);
+   //Serial.print("Current Speed feedback : ");
+   // Serial.println(Current_Speed);
+   // delay(10);
 
    }
    else if(c=='e')
@@ -80,16 +83,17 @@ void loop()
    }
       else if(c=='u')
    {
-    speed0+=5;
+    speed0+=stepsize;
     if(speed0>speedmax)
     speed0=speedmax;
    }
    else if(c=='j')
    {
-    speed0-=5;
+    speed0-=stepsize;
     if(speed0<0)
     speed0=0;
    }
-
-
+    Current_Speed=rmcs.Speed_Feedback(slave_id);
+    Serial.print("Current Speed feedback : ");
+    Serial.println(Current_Speed);
 }
