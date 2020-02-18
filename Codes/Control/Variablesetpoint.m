@@ -8,7 +8,7 @@ encoder = rotaryEncoder(a,'D2','D3',810);
 
 pwm='D5';
 direction='D7';
-kp=0.04;
+kp=0.009;
 ki=0.09;
 kd=0;
 error=0;
@@ -16,23 +16,22 @@ current_val=0;
 error_prev=0;
 dt=0;
 thetaref=0;
-setpoint=(thetaref*9840)/360;
+setpoint=45;
 prevtime=0;
-scale=200;
+scale=10;
 iscale=1;
 risetime=0;
 settime=0;
 figure
 h=animatedline;
 ylabel("Response");
-ylim([0,150]);
-current_theta=0;
+current_count=0;
 flag=0;
 flag1=0;
-
+tic;
 while(1)
-    [current_val,time]=readCount(encoder);
-    current_theta=(current_val*360)/9840;
+    [current_count,time]=readCount(encoder);
+    current_val=(current_count*360)/9840;
     if(current_val==0.9*setpoint & flag1==0)
         risetime=time;
         flag1=1;
@@ -63,8 +62,12 @@ while(1)
         writeDigitalPin(a,direction,0);
         writePWMVoltage(a,pwm,-pid);
     end 
-    
-    addpoints(h,time,current_theta);
+    t=toc;
+    if (t>5)
+        setpoint=setpoint+10;
+        tic;
+    end
+    addpoints(h,time,current_val);
     xlim([time-50,time+50]);
     drawnow;
     
