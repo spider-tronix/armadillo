@@ -24,11 +24,15 @@ risetime=0;
 settime=0;
 figure
 h=animatedline;
+h1=animatedline('Color','r');
+h2=animatedline('Color','b');
+
 ylabel("Response");
 current_count=0;
 flag=0;
 flag1=0;
 tic;
+delay=5;
 while(1)
     [current_count,time]=readCount(encoder);
     current_val=(current_count*360)/9840;
@@ -63,10 +67,17 @@ while(1)
         writePWMVoltage(a,pwm,-pid);
     end 
     t=toc;
-    if (t>5)
+    if (t>delay)
         setpoint=setpoint+10;
-        tic;
+        if(setpoint<100)
+            tic;
+        else
+            setpoint=setpoint-52;
+            tic;
+        end
     end
+    addpoints(h1,time,setpoint);
+    addpoints(h2,time,setpoint-current_val);
     addpoints(h,time,current_val);
     xlim([time-50,time+50]);
     drawnow;
