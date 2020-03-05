@@ -9,11 +9,29 @@ const byte motorpwm[2] = {5,6}; //for H-bridge: motor speed
 
 int encoder[2] = {0,0};
 double pv_speed[2] = {0,0};
-double set_speed[2] = {60,60};
+double set_speed[2] = {50,50};
 double e_speed[2] = {0,0}; //error of speed = set_speed - pv_speed
 double e_speed_pre[2] ={0,0};  //last error of speed
 double e_speed_sum[2] ={0,0};  //sum error of speed
 double pwm_pulse[2] = {0,0};     //this value is 0~255
+
+
+// -------------------- CASCADED PID PARAMETERS----------------------------//
+
+
+double delomega_setp = set_speed[0]-set_speed[1];
+double delomega_pv = 0;
+double e_speed_delomega = 0; //error of speed = set_speed - pv_speed
+double e_speed_prev_delomega = 0;  //last error of speed
+double e_speed_sum_delomega = 0;  //sum error of speed
+double delomegacorrection = 0;     //this value is 0~255
+
+double kpo=0.55,kio=0.00,kdo=0.0;
+
+
+
+// ------------------------------------------------------------------------//  
+
 
 
 double pv_speedb = 0;
@@ -24,9 +42,9 @@ double e_speed_sumb = 0;  //sum error of speed
 double pwm_pulseb = 0;     //this value is 0~255
 
 
-double kp[2] = {2.2,2.2};
-double ki[2] = {1.3,1.3};
-double kd[2] = {0,0};
+double kp[2] = {0.3,0.3};
+double ki[2] = {0.2,0.2};
+double kd[2] = {0.0,0.0};
 int timer1_counter; //for timer
 int i=0;
 
@@ -73,13 +91,15 @@ void setup()
  ISR(TIMER1_OVF_vect)        // interrupt service routine - tick every 0.1sec
 
  {
-  Serial.println("timer");
+  //Serial.println("timer");
   TCNT1 = timer1_counter;   // set timer
   for(int i=0;i<2;i++)
   {
-  pv_speed[i] = 60.0*(encoder[i]/3690.0)/0.5;  //calculate motor speed, unit is rpm
-  Serial.println(pv_speed[i]);
- // pv_speed[i] = 60.0*(encoderb/3690.0)/0.5;
+  pv_speed[i] = 60.0*(encoder[i]/3690.0)/0.5;
+  //Serial.print("motor");//calculate motor speed, unit is rpm
+  //Serial.print(i);
+  //Serial.print(" ");
+  //Serial.println(pv_speed[i]);
   encoder[i]=0;
  // Serial.print("speed :");
  
@@ -108,33 +128,54 @@ void pid()
 
 {
   //PID program
-    Serial.println("in side loop");
+    Serial.println(pv_speed[0]-pv_speed[1]);
     for(int i=0;i<2;i++)
     {
     e_speed[i] = set_speed[i] - pv_speed[i];
     pwm_pulse[i] = e_speed[i]*kp[i] + e_speed_sum[i]*ki[i] + (e_speed[i] - e_speed_pre[i])*kd[i];
     e_speed_pre[i] = e_speed[i];  //save last (previous) error
     e_speed_sum[i] += e_speed[i];
-  //sum of error
-   // if (e_speed_sum >4000) e_speed_sum = 4000;
-   // if (e_speed_sum <-4000) e_speed_sum = -4000;
-  //update new speed
-  if (pwm_pulse[i] <255 & pwm_pulse[i] >0)
-  { digitalWrite(motordir[i],HIGH);
-    analogWrite(motorpwm[i],pwm_pulse[i]);  //set motor speed  
-  }
-  else{
-    if (pwm_pulse[i]>255){
-      digitalWrite(motordir[i],HIGH);
-      analogWrite(motorpwm[i],255);
     }
-    else{
-      digitalWrite(motordir[i],HIGH);
-      analogWrite(motorpwm[i],0);
-    }
-  }
 
-  }
+     // CASCADED PID STATISTICAL APPROACH
+    e_speed_delomega=pv_speed[0]-pv_speed[1];
+    delomegacorrection=(e_speed_delomega*kpo)+(e_speed_sum_delomega*kio)+((e_speed_delomega-e_speed_prev_delomega)*kdo);
+    e_speed_prev_delomega=e_speed_delomega;
+    e_speed_sum_delomega += e_speed_delomega;
+
+    if(pv_speed[0]>pv_speed[1])
+    {
+        pwm_pulse[0]-=fabs(delomegacorrection/2);
+        pwm_pulse[1]+=fabs(delomegacorrection/2);
+    }
+     else if((pv_speed[0]<pv_speed[1]))
+     {
+        pwm_pulse[0]+=fabs(delomegacorrection/2);
+        pwm_pulse[1]-=fabs(delomegacorrection/2); 
+     }
+
+
+
+  for(int i=0;i<2;i++)
+  {
+    if (pwm_pulse[i] <255 & pwm_pulse[i] >0)
+    { digitalWrite(motordir[i],HIGH);
+      analogWrite(motorpwm[i],pwm_pulse[i]);  //set motor speed  
+    }
+    else
+    {
+      if (pwm_pulse[i]>255)
+      {
+        digitalWrite(motordir[i],HIGH);
+        analogWrite(motorpwm[i],255);
+      }
+      else
+      {
+        digitalWrite(motordir[i],HIGH);
+        analogWrite(motorpwm[i],0);
+      }
+    }
+
+}
   
 }
-
